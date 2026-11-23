@@ -1,0 +1,95 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design tokens. All colours live here so the palette can be swapped in one place.
+ * Pastel accents are used for categories and highlights; text colours keep WCAG AA contrast.
+ */
+:root {
+  --bg: #faf8ff;
+  --surface: #ffffff;
+  --surface-muted: #f3f0fb;
+  --border: #ece8f5;
+  --text: #2b2840;
+  --text-muted: #6e6a85;
+  --primary: #6b5bd6;
+  --primary-soft: #e9e4fd;
+  --on-primary: #ffffff;
+  --danger: #c2415d;
+  --danger-soft: #fde4ea;
+  --success: #2f8a63;
+  --success-soft: #dcf5ea;
+
+  --pastel-lavender: #d9d0fa;
+  --pastel-mint: #c6f0dd;
+  --pastel-peach: #ffdcc6;
+  --pastel-sky: #c9e6f7;
+  --pastel-rose: #fad3e3;
+  --pastel-butter: #fdf0b8;
+}
+
+.dark {
+  --bg: #16141f;
+  --surface: #1f1c2b;
+  --surface-muted: #282437;
+  --border: #322d44;
+  --text: #ecebf5;
+  --text-muted: #a19db8;
+  --primary: #b3a6f7;
+  --primary-soft: #2f2a4a;
+  --on-primary: #1a1630;
+  --danger: #f39ab0;
+  --danger-soft: #3d2330;
+  --success: #8fdcb9;
+  --success-soft: #1f3a2f;
+
+  --pastel-lavender: #4a4178;
+  --pastel-mint: #2c5a49;
+  --pastel-peach: #6b4a37;
+  --pastel-sky: #2f5168;
+  --pastel-rose: #66384d;
+  --pastel-butter: #5f5530;
+}
+
+@theme inline {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-primary: var(--primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-on-primary: var(--on-primary);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+
+  --color-lavender: var(--pastel-lavender);
+  --color-mint: var(--pastel-mint);
+  --color-peach: var(--pastel-peach);
+  --color-sky: var(--pastel-sky);
+  --color-rose: var(--pastel-rose);
+  --color-butter: var(--pastel-butter);
+}
+
+html {
+  color-scheme: light;
+}
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-bg text-text font-sans antialiased;
+  transition: background-color 0.2s ease;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
