@@ -76,7 +76,7 @@ Without a `.env` file the app still runs and shows a setup notice on the login p
 ### 1. Set up Supabase (one time)
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. Open **SQL Editor → New query**, paste the contents of `supabase/migrations/0001_initial_schema.sql` and click **Run**.
+2. Open **SQL Editor → New query** and run each file in `supabase/migrations/` **in order** (`0001_…`, then `0002_…`): paste its contents and click **Run**.
 3. Open **Authentication → URL Configuration** and set **Site URL** to your Vercel URL (e.g. `https://expense-tracker-xyz.vercel.app`) so confirmation emails link back to your app.
 4. Copy the **Project URL** and **anon public key** from **Project Settings → API**.
 
