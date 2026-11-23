@@ -1,7 +1,10 @@
-// Runs the SQL migration against an in-memory Postgres (PGlite) and checks
-// that Row-Level Security keeps each user's data private. Usage: npm run test:db
+// Runs every SQL migration against an in-memory Postgres (PGlite), then checks
+// that signed-in users can use their own data and nobody else's. Usage: npm run test:db
+//
+// Like a new Supabase project, tables start with NO grants to the API roles, so
+// the migrations themselves must grant access (see 0002_grant_table_access.sql).
 import { PGlite } from '@electric-sql/pglite';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 
 const db = new PGlite();
 const A = '11111111-1111-1111-1111-111111111111';
@@ -17,10 +20,12 @@ await db.exec(`
   grant usage on schema auth, public to anon, authenticated;
   grant execute on function auth.uid() to anon, authenticated;
 `);
-await db.exec(
-  readFileSync(new URL('../supabase/migrations/0001_initial_schema.sql', import.meta.url), 'utf8'),
-);
-await db.exec(`grant select, insert, update, delete on all tables in schema public to anon, authenticated;`);
+const migrationsDir = new URL('../supabase/migrations/', import.meta.url);
+for (const file of readdirSync(migrationsDir)
+  .filter((f) => f.endsWith('.sql'))
+  .sort()) {
+  await db.exec(readFileSync(new URL(file, migrationsDir), 'utf8'));
+}
 await db.exec(`insert into auth.users values ('${A}','a@x.com'),('${B}','b@x.com');`);
 
 const n = (await db.query(`select count(*)::int c from public.categories`)).rows[0].c;
@@ -72,11 +77,31 @@ try {
 }
 check('negative amount rejected', blocked);
 
+const aCat2 = aCats.rows[1].id;
+await as(
+  A,
+  `insert into public.budgets (category_id, month, amount) values ('${aCat2}', '2026-11-01', 100)
+  on conflict (user_id, category_id, month) do update set amount = excluded.amount`,
+);
+await as(
+  A,
+  `insert into public.budgets (category_id, month, amount) values ('${aCat2}', '2026-11-01', 250)
+  on conflict (user_id, category_id, month) do update set amount = excluded.amount`,
+);
+const budgetRows = (await as(A, `select amount::float8 a from public.budgets`)).rows;
+check('budget upsert updates instead of duplicating', budgetRows.length === 1 && budgetRows[0].a === 250);
+check('user B cannot see A budget', (await as(B, `select * from public.budgets`)).rows.length === 0);
+
 await as(A, `delete from public.categories where id='${aCat}'`);
 const e = (await as(A, `select category_id, user_id from public.expenses`)).rows[0];
 check('deleting category keeps expense uncategorised', e.category_id === null && e.user_id === A);
 
 await db.exec(`set role anon; select set_config('request.jwt.claim.sub','',false);`);
-const anonRows = (await db.query(`select * from public.expenses`)).rows.length;
+let anonBlocked = false;
+try {
+  await db.query(`select * from public.expenses`);
+} catch {
+  anonBlocked = true;
+}
 await db.exec(`reset role;`);
-check('anonymous visitor sees nothing', anonRows === 0);
+check('anonymous visitor is denied access', anonBlocked);
