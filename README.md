@@ -2,28 +2,31 @@
 
 A simple, modern expense-tracking dashboard with a soft pastel design. Works on desktop, tablet and phone, in light and dark mode.
 
-> **Status:** Phase 0 (foundation). Sign-up, login and the dashboard layout are in place; adding and charting expenses arrives in Phase 1. See the [roadmap](#roadmap).
+> **Live demo:** https://expense-tracker-kappa-one-49.vercel.app
+>
+> **Status:** Phase 1 complete: expenses, categories, budgets and a live dashboard. See the [roadmap](#roadmap).
 
 ## Tech stack
 
 | Layer    | Tools                                                                 |
 | -------- | --------------------------------------------------------------------- |
-| Frontend | React 19, TypeScript, Vite, React Router                              |
+| Frontend | React 19, TypeScript, Vite, React Router, TanStack Query, Recharts    |
 | Styling  | Tailwind CSS v4 with a custom pastel design-token theme, Lucide icons |
 | Backend  | Supabase (Postgres, Auth, Row-Level Security)                         |
 | Testing  | Vitest + Testing Library (UI), PGlite (database security tests)       |
 | Quality  | TypeScript strict checks, Oxlint, Prettier, GitHub Actions CI         |
 | Hosting  | Vercel                                                                |
 
-## Features (so far)
+## Features
 
-- Email sign-up and sign-in with email confirmation
-- Protected routes: signed-out visitors are sent to the login page
-- Responsive app shell: sidebar on desktop, bottom navigation on mobile
-- Light/dark mode that follows the system setting and remembers your choice
-- Database schema for categories, expenses and monthly budgets
-- Every new user gets 10 starter categories automatically
-- Row-Level Security: each user can only read and change their own data, verified by automated tests
+- **Expenses:** add, edit and delete expenses with amount, category, date and note; search and filter by category; grouped by day with daily totals
+- **Dashboard:** monthly total with change vs last month, budget left, daily spending chart, spending by category, recent expenses and budget progress
+- **Budgets:** monthly limit per category with on-track / almost / over status (colour, icon and text); copy last month's budgets in one click
+- **Categories:** create, rename, recolour and change icons; deleting keeps expenses as Uncategorized
+- **Month navigation:** browse any month; the selected month is kept in the URL
+- **Accounts:** email sign-up with confirmation, display name, sign out
+- **Design:** pastel light and dark themes, responsive layout with a sidebar on desktop and a bottom bar with a quick-add button on mobile, accessible dialogs, keyboard focus and screen-reader labels
+- **Security:** Row-Level Security so each user only sees their own data, verified by automated database tests
 
 ## Project structure
 
@@ -32,8 +35,10 @@ src/
   auth/         Auth context, provider and route guard
   components/   App shell, logo, theme toggle, UI primitives (Button, Card, Input…)
   config/       App name and defaults (change the product name here)
-  lib/          Supabase client, formatting helpers
-  pages/        Login, Dashboard, 404
+  components/   expenses/ (form + dialog), charts/ (spending, categories, budgets)
+  hooks/        React Query data hooks, URL month state
+  lib/          Supabase API, money/date helpers, monthly stats, validation
+  pages/        Login, Dashboard, Expenses, Budgets, Categories, Settings, 404
   theme/        Light/dark theme provider
 supabase/
   migrations/   SQL to create tables, security policies and triggers
@@ -88,7 +93,7 @@ Without a `.env` file the app still runs and shows a setup notice on the login p
 ## Roadmap
 
 - [x] **Phase 0:** Project foundation, design system, auth, database schema, CI
-- [ ] **Phase 1:** Add/edit/delete expenses, categories, dashboard charts, monthly budgets
+- [x] **Phase 1:** Add/edit/delete expenses, categories, dashboard charts, monthly budgets
 - [ ] **Phase 2:** CSV import/export, recurring expenses, installable PWA, launch
 - [ ] **Phase 3:** User feedback and validation
 - [ ] **Phase 4:** iOS and Android apps (React Native + Expo)

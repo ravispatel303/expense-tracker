@@ -27,6 +27,12 @@
   --pastel-sky: #c9e6f7;
   --pastel-rose: #fad3e3;
   --pastel-butter: #fdf0b8;
+
+  /* Chart + status colours (validated for contrast and lightness on the surface) */
+  --chart-bar: #6b5bd6;
+  --chart-grid: #ece8f5;
+  --warning: #a86200;
+  --warning-soft: #fdf0d5;
 }
 
 .dark {
@@ -50,6 +56,11 @@
   --pastel-sky: #2f5168;
   --pastel-rose: #66384d;
   --pastel-butter: #5f5530;
+
+  --chart-bar: #9085e9;
+  --chart-grid: #2b2740;
+  --warning: #e8b45a;
+  --warning-soft: #3b3020;
 }
 
 @theme inline {
@@ -68,6 +79,10 @@
   --color-danger-soft: var(--danger-soft);
   --color-success: var(--success);
   --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-chart-bar: var(--chart-bar);
+  --color-chart-grid: var(--chart-grid);
 
   --color-lavender: var(--pastel-lavender);
   --color-mint: var(--pastel-mint);
