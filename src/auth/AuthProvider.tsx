@@ -46,6 +46,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { error } = await requireClient().auth.signOut();
       if (error) throw error;
     },
+    async updateDisplayName(name) {
+      const { error } = await requireClient().auth.updateUser({ data: { display_name: name.trim() } });
+      if (error) throw error;
+    },
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
